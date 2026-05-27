@@ -12,3 +12,4 @@ node_modules
 .vercel
 apps/admin/public/uploads
 apps/web/public/uploads
+*.tsbuildinfo

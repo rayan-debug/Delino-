@@ -24,7 +24,7 @@ function Dust({ count = 220, color = '#c9a86a' }: { count?: number; color?: stri
   return (
     <points ref={ref}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" array={positions} count={count} itemSize={3} />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial size={0.04} color={color} transparent opacity={0.7} depthWrite={false} />
     </points>

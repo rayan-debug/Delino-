@@ -7,7 +7,7 @@ export default function Reveal({
   className = '',
   children,
 }: {
-  as?: keyof JSX.IntrinsicElements;
+  as?: keyof React.JSX.IntrinsicElements;
   delay?: number;
   className?: string;
   children: React.ReactNode;
