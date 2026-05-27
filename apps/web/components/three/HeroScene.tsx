@@ -1,7 +1,7 @@
 'use client';
 import { Suspense, useMemo, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, Environment, MeshDistortMaterial, Sparkles, Stars } from '@react-three/drei';
+import { Float, MeshDistortMaterial, Sparkles, Stars } from '@react-three/drei';
 import type * as THREE from 'three';
 
 function Dust({ count = 220, color = '#c9a86a' }: { count?: number; color?: string }) {
@@ -94,7 +94,6 @@ export default function HeroScene({ accent = '#c9a86a' }: { accent?: string }) {
         <Dust color={accent} />
         <GoldOrb color={accent} />
         <Ring color={accent} />
-        <Environment preset="night" />
       </Suspense>
     </Canvas>
   );
