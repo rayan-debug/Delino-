@@ -6,16 +6,14 @@ export const dynamic = 'force-dynamic';
 
 async function getStats() {
   try {
-    const [projects, services, clients, journal, unread] = await Promise.all([
+    const [projects, services, unread] = await Promise.all([
       prisma.project.count(),
       prisma.service.count(),
-      prisma.client.count(),
-      prisma.journalPost.count(),
       prisma.message.count({ where: { read: false } }),
     ]);
-    return { projects, services, clients, journal, unread, ok: true };
+    return { projects, services, unread, ok: true };
   } catch {
-    return { projects: 0, services: 0, clients: 0, journal: 0, unread: 0, ok: false };
+    return { projects: 0, services: 0, unread: 0, ok: false };
   }
 }
 
@@ -24,8 +22,6 @@ export default async function Dashboard() {
   const cards = [
     { label: 'Projects', value: stats.projects, href: '/projects' },
     { label: 'Services', value: stats.services, href: '/services' },
-    { label: 'Clients', value: stats.clients, href: '/clients' },
-    { label: 'Journal', value: stats.journal, href: '/journal' },
   ];
 
   return (
@@ -62,7 +58,6 @@ export default async function Dashboard() {
               View Inbox {stats.unread > 0 && <span className="chip">{stats.unread}</span>}
             </Link>
             <Link href="/hero" className="btn btn-secondary">Edit Homepage Hero</Link>
-            <Link href="/journal" className="btn btn-secondary">Write a Journal Post</Link>
           </div>
         </div>
       </div>

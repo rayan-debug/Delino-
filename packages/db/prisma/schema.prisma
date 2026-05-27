@@ -137,32 +137,6 @@ model Project {
   @@index([featured])
 }
 
-model Client {
-  id        String   @id @default(cuid())
-  name      String
-  logoUrl   String?
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  @@index([order])
-}
-
-model JournalPost {
-  id        String   @id @default(cuid())
-  slug      String   @unique
-  title     String
-  excerpt   String
-  body      String   @default("")
-  category  String   @default("Essay")
-  readTime  String   @default("5 min read")
-  image     String
-  publishedAt DateTime @default(now())
-  published Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  @@index([publishedAt])
-}
-
 model Message {
   id        String   @id @default(cuid())
   name      String

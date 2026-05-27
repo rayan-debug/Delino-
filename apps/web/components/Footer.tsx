@@ -31,8 +31,6 @@ export default async function Footer({ site }: { site: SiteLike }) {
             <li><Link href="/services">Services</Link></li>
             <li><Link href="/work">Work</Link></li>
             <li><Link href="/about">About</Link></li>
-            <li><Link href="/clients">Clients</Link></li>
-            <li><Link href="/journal">Journal</Link></li>
             <li><Link href="/contact">Contact</Link></li>
           </ul>
         </div>

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { LogOut, ExternalLink, Layers, Palette, Home as HomeIcon, Briefcase, Building2, Users, BookOpen, Mail, Inbox, Settings, Image as ImageIcon } from 'lucide-react';
+import { ExternalLink, Layers, Palette, Home as HomeIcon, Briefcase, Building2, BookOpen, Mail, Inbox, Settings, Image as ImageIcon } from 'lucide-react';
 import { requireSession } from '@/lib/session';
 import { logoutAction } from './actions';
 import LogoutButton from './LogoutButton';
@@ -11,9 +11,7 @@ const NAV = [
   { href: '/hero', label: 'Hero', icon: ImageIcon },
   { href: '/services', label: 'Services', icon: Briefcase },
   { href: '/projects', label: 'Projects', icon: Building2 },
-  { href: '/clients', label: 'Clients', icon: Users },
   { href: '/about', label: 'About', icon: BookOpen },
-  { href: '/journal', label: 'Journal', icon: BookOpen },
   { href: '/contact', label: 'Contact', icon: Mail },
   { href: '/messages', label: 'Inbox', icon: Inbox },
   { href: '/settings', label: 'Account', icon: Settings },

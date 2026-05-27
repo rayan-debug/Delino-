@@ -147,57 +147,6 @@ export const DEFAULT_PROJECTS = [
   },
 ];
 
-export const DEFAULT_CLIENTS = [
-  'Four Seasons',
-  'Aman',
-  'Bulgari',
-  'Rosewood',
-  'The Ritz-Carlton',
-  'Raffles',
-  'Waldorf Astoria',
-  'Mandarin Oriental',
-  'St. Regis',
-  'Belmond',
-].map((name, i) => ({ name, order: i + 1 }));
-
-export const DEFAULT_JOURNAL = [
-  {
-    slug: 'new-vocabulary-of-luxury',
-    title: 'On the new vocabulary of luxury hospitality',
-    excerpt:
-      "A short meditation on the language hotels speak today — and the silences that matter more.",
-    category: 'Essay',
-    readTime: '6 min read',
-    image:
-      'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1400&q=80&auto=format&fit=crop',
-    body:
-      "There is a quiet language inside hospitality — one spoken without words, expressed in the weight of a door, the silence between rooms, the half-second pause of a concierge before they smile. We design for that pause.\n\nThe brands that endure are not the ones that shout the loudest. They are the ones that listen most carefully.",
-  },
-  {
-    slug: 'photographing-food-without-performing-it',
-    title: 'Photographing food without performing it',
-    excerpt: 'Notes from the kitchen and the studio on what we leave out of a frame.',
-    category: 'Field Notes',
-    readTime: '4 min read',
-    image:
-      'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1400&q=80&auto=format&fit=crop',
-    body:
-      "The best F&B image is the one where you can almost hear the room. The clink of a spoon, the low murmur of guests, the breath before the first bite.",
-  },
-  {
-    slug: 'designing-the-digital-lobby',
-    title: 'Designing the digital lobby',
-    excerpt:
-      "What a great hotel website learns from a great hotel lobby — and what it shouldn't.",
-    category: 'Process',
-    readTime: '8 min read',
-    image:
-      'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1400&q=80&auto=format&fit=crop',
-    body:
-      "A lobby is a threshold. It tells you what to expect, what to feel, and what to forget. A website does the same — only faster, and on a smaller stage.",
-  },
-];
-
 export const DEFAULT_ABOUT = {
   eyebrow: 'OUR PHILOSOPHY',
   headline: 'A studio built on craft, restraint, and quiet luxury.',

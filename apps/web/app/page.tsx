@@ -4,27 +4,22 @@ import {
   getHero,
   getServices,
   getProjects,
-  getClients,
   getAbout,
-  getJournalPosts,
   getSite,
 } from '@/lib/content';
 import Reveal from '@/components/Reveal';
 import ServiceIcon from '@/components/ServiceIcon';
-import Marquee from '@/components/Marquee';
 import HeroLinesLazy from '@/components/HeroLinesLazy';
 
 export const revalidate = 60;
 
 export default async function Home() {
-  const [site, hero, services, projects, clients, about, journal] = await Promise.all([
+  const [site, hero, services, projects, about] = await Promise.all([
     getSite(),
     getHero(),
     getServices(),
     getProjects({ featuredOnly: true }),
-    getClients(),
     getAbout(),
-    getJournalPosts(),
   ]);
 
   return (
@@ -132,27 +127,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* CLIENTS */}
-      <section className="py-16 border-t border-b" style={{ borderColor: 'var(--c-line)' }}>
-        <div className="container-luxe">
-          <div className="flex items-center gap-8">
-            <div className="text-[0.7rem] tracking-luxe uppercase whitespace-nowrap" style={{ color: 'var(--c-muted)' }}>
-              Our Clients
-            </div>
-            <div className="flex-1 overflow-hidden">
-              <Marquee
-                items={clients}
-                render={(c) => (
-                  <span className="font-display text-xl md:text-2xl tracking-wide-luxe whitespace-nowrap">
-                    {c.name}
-                  </span>
-                )}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ABOUT TEASER */}
       <section className="py-28">
         <div className="container-luxe grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
@@ -178,42 +152,6 @@ export default async function Home() {
             </div>
             <Link href="/about" className="link-explore mt-10 inline-flex">Discover the studio</Link>
           </Reveal>
-        </div>
-      </section>
-
-      {/* JOURNAL TEASER */}
-      <section className="py-28 border-t" style={{ borderColor: 'var(--c-line)' }}>
-        <div className="container-luxe">
-          <Reveal>
-            <div className="flex items-end justify-between mb-12">
-              <div>
-                <div className="eyebrow">Journal</div>
-                <h2 className="section-headline mt-4">Recent musings.</h2>
-              </div>
-              <Link href="/journal" className="link-explore hide-mobile">All Entries</Link>
-            </div>
-          </Reveal>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {journal.slice(0, 3).map((j, i) => (
-              <Reveal key={j.id} delay={i * 100}>
-                <Link href={`/journal/${j.slug}`} className="block group">
-                  <div className="relative aspect-[4/3] overflow-hidden">
-                    <div
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-[1400ms] group-hover:scale-105"
-                      style={{ backgroundImage: `url(${j.image})` }}
-                    />
-                  </div>
-                  <div className="mt-5">
-                    <div className="text-[0.65rem] tracking-luxe uppercase" style={{ color: 'var(--c-accent)' }}>
-                      {j.category} · {j.readTime}
-                    </div>
-                    <h3 className="font-display text-2xl mt-3 leading-tight">{j.title}</h3>
-                    <p className="text-sm mt-3 leading-relaxed" style={{ color: 'var(--c-muted)' }}>{j.excerpt}</p>
-                  </div>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
         </div>
       </section>
 

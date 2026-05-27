@@ -6,8 +6,6 @@ import {
   DEFAULT_CONTACT,
   DEFAULT_SERVICES,
   DEFAULT_PROJECTS,
-  DEFAULT_CLIENTS,
-  DEFAULT_JOURNAL,
 } from '@luxora/db/defaults';
 
 // Fetch all site-wide content. Falls back to defaults if DB is unreachable
@@ -117,44 +115,3 @@ export async function getProjectBySlug(slug: string) {
   }
 }
 
-export async function getClients() {
-  try {
-    return await prisma.client.findMany({ orderBy: { order: 'asc' } });
-  } catch {
-    return DEFAULT_CLIENTS.map((c, i) => ({
-      ...c,
-      id: `d${i}`,
-      logoUrl: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }));
-  }
-}
-
-export async function getJournalPosts() {
-  try {
-    return await prisma.journalPost.findMany({
-      where: { published: true },
-      orderBy: { publishedAt: 'desc' },
-    });
-  } catch {
-    return DEFAULT_JOURNAL.map((j, i) => ({
-      ...j,
-      id: `d${i}`,
-      published: true,
-      publishedAt: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }));
-  }
-}
-
-export async function getJournalBySlug(slug: string) {
-  try {
-    return await prisma.journalPost.findUnique({ where: { slug } });
-  } catch {
-    const j = DEFAULT_JOURNAL.find((x) => x.slug === slug);
-    if (!j) return null;
-    return { ...j, id: 'd', published: true, publishedAt: new Date(), createdAt: new Date(), updatedAt: new Date() };
-  }
-}

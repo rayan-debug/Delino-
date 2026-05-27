@@ -5,8 +5,6 @@ import {
   DEFAULT_HERO,
   DEFAULT_SERVICES,
   DEFAULT_PROJECTS,
-  DEFAULT_CLIENTS,
-  DEFAULT_JOURNAL,
   DEFAULT_ABOUT,
   DEFAULT_CONTACT,
 } from '../src/defaults';
@@ -85,27 +83,6 @@ async function main() {
     });
   }
   console.log('  ✓ projects');
-
-  // Clients
-  for (const c of DEFAULT_CLIENTS) {
-    const id = `seed-client-${c.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
-    await prisma.client.upsert({
-      where: { id },
-      create: { id, ...c },
-      update: {},
-    });
-  }
-  console.log('  ✓ clients');
-
-  // Journal
-  for (const j of DEFAULT_JOURNAL) {
-    await prisma.journalPost.upsert({
-      where: { slug: j.slug },
-      create: j,
-      update: {},
-    });
-  }
-  console.log('  ✓ journal');
 
   // Admin bootstrap user
   const email = process.env.ADMIN_EMAIL ?? 'admin@example.com';
