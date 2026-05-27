@@ -15,13 +15,14 @@
     "build:web": "pnpm --filter @luxora/web build",
     "build:admin": "pnpm --filter @luxora/admin build",
     "lint": "turbo run lint",
-    "db:generate": "pnpm --filter @luxora/db prisma generate",
-    "db:push": "pnpm --filter @luxora/db prisma db push",
-    "db:migrate": "pnpm --filter @luxora/db prisma migrate dev",
-    "db:seed": "pnpm --filter @luxora/db seed",
-    "db:studio": "pnpm --filter @luxora/db prisma studio"
+    "db:generate": "dotenv -e .env -- pnpm --filter @luxora/db prisma generate",
+    "db:push": "dotenv -e .env -- pnpm --filter @luxora/db prisma db push",
+    "db:migrate": "dotenv -e .env -- pnpm --filter @luxora/db prisma migrate dev",
+    "db:seed": "dotenv -e .env -- pnpm --filter @luxora/db seed",
+    "db:studio": "dotenv -e .env -- pnpm --filter @luxora/db prisma studio"
   },
   "devDependencies": {
+    "dotenv-cli": "^7.4.4",
     "turbo": "^2.3.0",
     "typescript": "^5.6.3"
   },
