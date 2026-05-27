@@ -24,16 +24,21 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
   overflow-x: hidden;
+  touch-action: pan-y;
 }
 body { overscroll-behavior: none; }
 
-/* R3F Canvas sets touch-action: none on the inner <canvas> by default,
-   which blocks wheel/trackpad/touch scrolling on Windows + Chrome even
-   when the wrapper has pointer-events: none. Force it back to auto for
-   any decorative canvas (we wrap all decorative R3F scenes with
-   .pointer-events-none). */
-.pointer-events-none canvas {
-  touch-action: auto !important;
+/* R3F sets touch-action: none on the <canvas> element via its event
+   system. On Chrome, two-finger trackpad gestures are treated as
+   touch input, so this blocks page scrolling whenever the cursor is
+   over a decorative canvas. Force pan-y everywhere so vertical
+   scrolling always works, and make sure decorative canvases never
+   capture pointer events. */
+canvas {
+  touch-action: pan-y !important;
+}
+.pointer-events-none,
+.pointer-events-none * {
   pointer-events: none !important;
 }
 a { color: inherit; text-decoration: none; }
