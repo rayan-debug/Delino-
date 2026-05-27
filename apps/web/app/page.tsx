@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Play, Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import {
   getHero,
   getServices,
@@ -58,15 +58,6 @@ export default async function Home() {
               <Link href="/work" className="btn-primary">
                 {hero.primaryCta} <ArrowRight size={14} />
               </Link>
-              <button className="flex items-center gap-3 group" data-hover>
-                <span
-                  className="w-12 h-12 rounded-full border flex items-center justify-center transition-colors group-hover:bg-[color:var(--c-accent)] group-hover:text-[color:var(--c-bg)]"
-                  style={{ borderColor: 'var(--c-accent)', color: 'var(--c-accent)' }}
-                >
-                  <Play size={14} fill="currentColor" />
-                </span>
-                <span className="text-[0.7rem] tracking-luxe uppercase">{hero.secondaryCta}</span>
-              </button>
             </div>
           </Reveal>
           <Reveal delay={850}>
