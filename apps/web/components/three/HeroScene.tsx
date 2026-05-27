@@ -84,6 +84,7 @@ export default function HeroScene({ accent = '#c9a86a' }: { accent?: string }) {
       camera={{ position: [0, 0, 6], fov: 50 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       dpr={[1, 2]}
+      style={{ touchAction: 'auto', pointerEvents: 'none' }}
     >
       <ambientLight intensity={0.35} />
       <directionalLight position={[5, 5, 5]} intensity={1.2} color={accent} />
