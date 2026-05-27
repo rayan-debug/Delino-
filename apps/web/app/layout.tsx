@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { getSite } from '@/lib/content';
 import ThemeInjector from '@/components/ThemeInjector';
-import Cursor from '@/components/Cursor';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
@@ -42,7 +41,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body>
         <ThemeInjector site={site} />
-        <Cursor />
         <Navbar site={site} />
         <main>{children}</main>
         <Footer site={site} />

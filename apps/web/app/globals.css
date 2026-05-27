@@ -22,11 +22,11 @@ html, body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  scroll-behavior: smooth;
   overflow-x: hidden;
+  overflow-y: auto;
   touch-action: pan-y;
 }
-body { overscroll-behavior: none; }
+html { scroll-behavior: smooth; }
 
 /* R3F sets touch-action: none on the <canvas> element via its event
    system. On Chrome, two-finger trackpad gestures are treated as
@@ -120,15 +120,6 @@ img { display: block; max-width: 100%; height: auto; }
 .reveal { opacity: 0; transform: translateY(40px); transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1), transform 1s cubic-bezier(0.22, 1, 0.36, 1); }
 .reveal.in-view { opacity: 1; transform: translateY(0); }
 
-.cursor-dot, .cursor-ring {
-  position: fixed; top: 0; left: 0; border-radius: 50%;
-  pointer-events: none; z-index: 9999; mix-blend-mode: difference;
-  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
-}
-.cursor-dot { width: 6px; height: 6px; background: #fff; }
-.cursor-ring { width: 36px; height: 36px; border: 1px solid #fff; }
-.cursor-ring.hovering { width: 70px; height: 70px; background: rgba(255,255,255,0.08); }
-@media (max-width: 900px) { .cursor-dot, .cursor-ring { display: none; } }
 
 .tile { position: relative; overflow: hidden; background: var(--c-surface); aspect-ratio: 4 / 5; }
 .tile-image {
@@ -163,12 +154,6 @@ img { display: block; max-width: 100%; height: auto; }
   color: var(--c-muted); margin-bottom: 0.5rem;
 }
 
-.mobile-nav {
-  position: fixed; inset: 0; background: var(--c-bg); z-index: 90;
-  display: flex; align-items: center; justify-content: center;
-  transform: translateY(-100%); transition: transform 0.7s cubic-bezier(0.76, 0, 0.24, 1);
-}
-.mobile-nav.open { transform: translateY(0); }
 
 @media (max-width: 768px) { .hide-mobile { display: none !important; } }
 @media (min-width: 769px) { .only-mobile { display: none !important; } }
