@@ -12,7 +12,7 @@ import {
 import Reveal from '@/components/Reveal';
 import ServiceIcon from '@/components/ServiceIcon';
 import Marquee from '@/components/Marquee';
-import HeroSceneLazy from '@/components/HeroSceneLazy';
+import HeroLinesLazy from '@/components/HeroLinesLazy';
 
 export const revalidate = 60;
 
@@ -33,9 +33,7 @@ export default async function Home() {
       <section className="relative min-h-[100svh] w-full overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${hero.image})` }} />
         <div className="absolute inset-0 hero-gradient" />
-        <div className="absolute inset-0 opacity-90 pointer-events-none">
-          <HeroSceneLazy accent={site.themeAccent} />
-        </div>
+        <HeroLinesLazy accent={site.themeAccent} />
 
         <div className="relative container-luxe pt-40 md:pt-52 pb-24">
           <Reveal>
