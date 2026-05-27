@@ -1,0 +1,184 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Single-row tables for site-wide content (keyed by id = "default").
+// We use a stable key instead of an autoincrement so the admin always
+// upserts the same row.
+
+model SiteSettings {
+  id              String   @id @default("default")
+  brandName       String   @default("LUXORA")
+  brandTagline    String   @default("CREATIVE STUDIO")
+  brandLogoUrl    String?
+  themeBg         String   @default("#0a0a0a")
+  themeSurface    String   @default("#141414")
+  themeAccent     String   @default("#c9a86a")
+  themeAccentSoft String   @default("#d9bf85")
+  themeText       String   @default("#f5f1ea")
+  themeMuted      String   @default("#9a958e")
+  themeLine       String   @default("rgba(245, 241, 234, 0.12)")
+  fontSerif       String   @default("Playfair Display")
+  fontSans        String   @default("Inter")
+  footerNote      String   @default("A creative studio for luxury hospitality. Paris · Milan · Dubai.")
+  footerCopyright String   @default("© Luxora Creative Studio")
+  updatedAt       DateTime @updatedAt
+}
+
+model HeroContent {
+  id            String   @id @default("default")
+  eyebrow       String   @default("WE CREATE. YOU INSPIRE.")
+  headlineLines String[] @default(["Digital Experiences.", "Iconic Stories.", "Timeless Hospitality."])
+  description   String   @default("")
+  image         String   @default("")
+  trustBadge    String   @default("TRUSTED BY LUXURY BRANDS WORLDWIDE")
+  primaryCta    String   @default("View Our Work")
+  secondaryCta  String   @default("Play Showreel")
+  updatedAt     DateTime @updatedAt
+}
+
+model AboutContent {
+  id        String     @id @default("default")
+  eyebrow   String     @default("OUR PHILOSOPHY")
+  headline  String     @default("A studio built on craft, restraint, and quiet luxury.")
+  body      String     @default("")
+  image     String     @default("")
+  stats     AboutStat[]
+  values    AboutValue[]
+  updatedAt DateTime   @updatedAt
+}
+
+model AboutStat {
+  id        String   @id @default(cuid())
+  label     String
+  value     String
+  order     Int      @default(0)
+  about     AboutContent @relation(fields: [aboutId], references: [id], onDelete: Cascade)
+  aboutId   String
+  @@index([aboutId])
+}
+
+model AboutValue {
+  id        String   @id @default(cuid())
+  title     String
+  text      String
+  order     Int      @default(0)
+  about     AboutContent @relation(fields: [aboutId], references: [id], onDelete: Cascade)
+  aboutId   String
+  @@index([aboutId])
+}
+
+model ContactContent {
+  id        String   @id @default("default")
+  headline  String   @default("Let us create something timeless.")
+  email     String   @default("studio@luxora.com")
+  phone     String   @default("")
+  address   String   @default("")
+  studios   Studio[]
+  socials   Social[]
+  updatedAt DateTime @updatedAt
+}
+
+model Studio {
+  id        String   @id @default(cuid())
+  city      String
+  address   String
+  order     Int      @default(0)
+  contact   ContactContent @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId String
+  @@index([contactId])
+}
+
+model Social {
+  id        String   @id @default(cuid())
+  label     String
+  href      String
+  order     Int      @default(0)
+  contact   ContactContent @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId String
+  @@index([contactId])
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  icon        String   @default("monitor")
+  title       String
+  description String
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@index([order])
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  category    String
+  description String
+  year        String?
+  client      String?
+  image       String
+  gallery     String[] @default([])
+  tags        String[] @default([])
+  order       Int      @default(0)
+  featured    Boolean  @default(false)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@index([order])
+  @@index([featured])
+}
+
+model Client {
+  id        String   @id @default(cuid())
+  name      String
+  logoUrl   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([order])
+}
+
+model JournalPost {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  excerpt   String
+  body      String   @default("")
+  category  String   @default("Essay")
+  readTime  String   @default("5 min read")
+  image     String
+  publishedAt DateTime @default(now())
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([publishedAt])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  company   String?
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  @@index([createdAt])
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // bcrypt hash
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

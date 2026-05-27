@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --c-bg: #0a0a0a;
+  --c-surface: #141414;
+  --c-accent: #c9a86a;
+  --c-accent-soft: #d9bf85;
+  --c-text: #f5f1ea;
+  --c-muted: #9a958e;
+  --c-line: rgba(245, 241, 234, 0.12);
+  --c-danger: #b94a4a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: var(--c-bg); color: var(--c-text);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; background: none; border: none; color: inherit; cursor: pointer; }
+img { display: block; max-width: 100%; height: auto; }
+
+.font-display { font-family: 'Playfair Display', serif; letter-spacing: -0.015em; }
+.tracking-luxe { letter-spacing: 0.25em; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--c-accent), #8d7548); border-radius: 10px; }
+
+.glass {
+  background: rgba(20, 20, 20, 0.55);
+  backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid var(--c-line);
+}
+
+.dot-live {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #5fcf80; box-shadow: 0 0 0 0 rgba(95, 207, 128, 0.7);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(95, 207, 128, 0.7); }
+  70% { box-shadow: 0 0 0 12px rgba(95, 207, 128, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(95, 207, 128, 0); }
+}
+
+.eyebrow {
+  font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--c-muted);
+}
+
+.field-label {
+  display: block; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--c-muted); margin-bottom: 0.5rem;
+}
+
+.admin-input, .admin-textarea, .admin-select {
+  width: 100%; background: var(--c-bg);
+  border: 1px solid var(--c-line);
+  padding: 0.7rem 0.9rem; font-size: 0.9rem; color: var(--c-text);
+  border-radius: 4px; font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+.admin-input:focus, .admin-textarea:focus, .admin-select:focus {
+  outline: none; border-color: var(--c-accent);
+}
+.admin-input[type="color"] { padding: 0.25rem; height: 44px; cursor: pointer; }
+.admin-textarea { resize: vertical; min-height: 90px; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  background: var(--c-accent); color: var(--c-bg);
+  font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+.btn:hover { background: var(--c-accent-soft); transform: translateY(-1px); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--c-line);
+  color: var(--c-text);
+}
+.btn-secondary:hover { border-color: var(--c-accent); color: var(--c-accent); background: transparent; transform: none; }
+.btn-danger { background: var(--c-danger); color: #fff; }
+.btn-danger:hover { background: #d05a5a; }
+.btn-icon { padding: 0.45rem; }
+
+.card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: 6px;
+  padding: 1.5rem;
+}
+.card-tight { padding: 1rem; }
+
+.table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.table th {
+  text-align: left; padding: 0.75rem 1rem;
+  font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--c-muted); border-bottom: 1px solid var(--c-line);
+  font-weight: 500;
+}
+.table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--c-line);
+}
+.table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.2rem 0.6rem; border-radius: 999px;
+  font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+  background: rgba(201,168,106,0.12); color: var(--c-accent);
+}
+.chip-muted { background: rgba(255,255,255,0.06); color: var(--c-muted); }
+.chip-danger { background: rgba(185, 74, 74, 0.18); color: #e89a9a; }
+
+@media (max-width: 900px) {
+  .hide-mobile { display: none !important; }
+}
