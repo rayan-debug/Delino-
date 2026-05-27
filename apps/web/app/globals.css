@@ -26,6 +26,16 @@ html, body {
   overflow-x: hidden;
 }
 body { overscroll-behavior: none; }
+
+/* R3F Canvas sets touch-action: none on the inner <canvas> by default,
+   which blocks wheel/trackpad/touch scrolling on Windows + Chrome even
+   when the wrapper has pointer-events: none. Force it back to auto for
+   any decorative canvas (we wrap all decorative R3F scenes with
+   .pointer-events-none). */
+.pointer-events-none canvas {
+  touch-action: auto !important;
+  pointer-events: none !important;
+}
 a { color: inherit; text-decoration: none; }
 button { font-family: inherit; background: none; border: none; color: inherit; cursor: pointer; }
 img { display: block; max-width: 100%; height: auto; }
