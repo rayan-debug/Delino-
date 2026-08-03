@@ -28,6 +28,22 @@ function parseGallery(raw: string): string[] {
     .filter(Boolean);
 }
 
+// A project belongs to at most one section. When it does, `category` mirrors
+// the section title (the public detail page still shows it as the discipline);
+// otherwise the free-text category field is used as-is.
+async function resolveSection(formData: FormData) {
+  const sectionId = String(formData.get('sectionId') ?? '').trim() || null;
+  const typedCategory = String(formData.get('category') ?? '').trim();
+  if (!sectionId) return { sectionId: null, category: typedCategory };
+
+  const section = await prisma.workSection.findUnique({
+    where: { id: sectionId },
+    select: { id: true, title: true },
+  });
+  if (!section) return { sectionId: null, category: typedCategory };
+  return { sectionId: section.id, category: section.title };
+}
+
 export async function createProject(formData: FormData) {
   const title = String(formData.get('title') ?? '').trim();
   let slug = String(formData.get('slug') ?? '').trim() || slugify(title);
@@ -37,12 +53,14 @@ export async function createProject(formData: FormData) {
     slug = `${slugify(title)}-${++n}`;
   }
   const last = await prisma.project.findFirst({ orderBy: { order: 'desc' } });
+  const { sectionId, category } = await resolveSection(formData);
 
   const project = await prisma.project.create({
     data: {
       slug,
       title,
-      category: String(formData.get('category') ?? '').trim(),
+      sectionId,
+      category,
       description: String(formData.get('description') ?? '').trim(),
       year: String(formData.get('year') ?? '').trim() || null,
       client: String(formData.get('client') ?? '').trim() || null,
@@ -55,6 +73,8 @@ export async function createProject(formData: FormData) {
     },
   });
   revalidatePath('/projects');
+  revalidatePath('/sections');
+  if (sectionId) revalidatePath(`/sections/${sectionId}`);
   await bustWebCache(['/', '/work', `/work/${project.slug}`]);
   redirect(`/projects/${project.id}`);
 }
@@ -68,13 +88,15 @@ export async function updateProject(formData: FormData) {
 
   const existing = await prisma.project.findFirst({ where: { slug, NOT: { id } } });
   const finalSlug = existing ? `${slug}-${Math.floor(Math.random() * 1000)}` : slug;
+  const { sectionId, category } = await resolveSection(formData);
 
   await prisma.project.update({
     where: { id },
     data: {
       slug: finalSlug,
       title,
-      category: String(formData.get('category') ?? '').trim(),
+      sectionId,
+      category,
       description: String(formData.get('description') ?? '').trim(),
       year: String(formData.get('year') ?? '').trim() || null,
       client: String(formData.get('client') ?? '').trim() || null,
@@ -88,6 +110,8 @@ export async function updateProject(formData: FormData) {
   });
   revalidatePath(`/projects/${id}`);
   revalidatePath('/projects');
+  revalidatePath('/sections');
+  if (sectionId) revalidatePath(`/sections/${sectionId}`);
   await bustWebCache(['/', '/work', `/work/${finalSlug}`]);
   redirect(`/projects/${id}`);
 }
@@ -98,6 +122,8 @@ export async function deleteProject(formData: FormData) {
   const project = await prisma.project.findUnique({ where: { id } });
   await prisma.project.delete({ where: { id } });
   revalidatePath('/projects');
+  revalidatePath('/sections');
+  if (project?.sectionId) revalidatePath(`/sections/${project.sectionId}`);
   if (project) await bustWebCache(['/', '/work', `/work/${project.slug}`]);
   redirect('/projects');
 }

@@ -105,6 +105,96 @@ export async function getProjects({ featuredOnly = false }: { featuredOnly?: boo
   }
 }
 
+export type WorkProject = {
+  id: string;
+  slug: string;
+  title: string;
+  category: string;
+  year: string | null;
+  image: string;
+};
+
+export type WorkSectionGroup = {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  projects: WorkProject[];
+};
+
+function toWorkProject(p: any): WorkProject {
+  return {
+    id: p.id,
+    slug: p.slug,
+    title: p.title,
+    category: p.category,
+    year: p.year ?? null,
+    image: p.image,
+  };
+}
+
+function sectionSlugify(input: string): string {
+  return (
+    input
+      .toLowerCase()
+      .normalize('NFKD')
+      .replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'section'
+  );
+}
+
+// Projects that have not been assigned to a section yet still need somewhere to
+// live, so they are grouped by their free-text `category` — which is exactly
+// how the work page behaved before sections existed.
+function groupByCategory(projects: any[]): WorkSectionGroup[] {
+  const groups: WorkSectionGroup[] = [];
+  for (const p of projects) {
+    const title = (p.category ?? '').trim() || 'Selected Work';
+    let group = groups.find((g) => g.title === title);
+    if (!group) {
+      group = { id: `cat-${sectionSlugify(title)}`, slug: sectionSlugify(title), title, description: '', projects: [] };
+      groups.push(group);
+    }
+    group.projects.push(toWorkProject(p));
+  }
+  return groups;
+}
+
+// The /work page renders one block per section, each with its own grid of
+// projects. Empty sections are skipped so the page never shows a bare heading.
+export async function getWorkSections(): Promise<WorkSectionGroup[]> {
+  try {
+    const [sections, unassigned] = await Promise.all([
+      prisma.workSection.findMany({
+        where: { published: true },
+        orderBy: { order: 'asc' },
+        include: { projects: { where: { published: true }, orderBy: { order: 'asc' } } },
+      }),
+      prisma.project.findMany({
+        where: { published: true, sectionId: null },
+        orderBy: { order: 'asc' },
+      }),
+    ]);
+
+    const grouped: WorkSectionGroup[] = sections
+      .filter((s) => s.projects.length > 0)
+      .map((s) => ({
+        id: s.id,
+        slug: s.slug,
+        title: s.title,
+        description: s.description ?? '',
+        projects: s.projects.map(toWorkProject),
+      }));
+
+    return [...grouped, ...groupByCategory(unassigned)];
+  } catch {
+    return groupByCategory(
+      DEFAULT_PROJECTS.map((p, i) => ({ ...p, id: `d${i}`, year: p.year ?? null }))
+    );
+  }
+}
+
 export async function getProjectBySlug(slug: string) {
   try {
     return await prisma.project.findUnique({ where: { slug } });
