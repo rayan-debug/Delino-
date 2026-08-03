@@ -46,7 +46,9 @@ async function resolveSection(formData: FormData) {
 
 export async function createProject(formData: FormData) {
   const title = String(formData.get('title') ?? '').trim();
-  let slug = String(formData.get('slug') ?? '').trim() || slugify(title);
+  // A hand-typed slug goes through slugify too — a raw value like
+  // "Food Photography" produces a URL the /work/[slug] route can't match.
+  let slug = slugify(String(formData.get('slug') ?? '').trim()) || slugify(title);
   // ensure unique slug
   let n = 1;
   while (await prisma.project.findUnique({ where: { slug } })) {
@@ -83,8 +85,7 @@ export async function updateProject(formData: FormData) {
   const id = String(formData.get('id') ?? '');
   if (!id) return;
   const title = String(formData.get('title') ?? '').trim();
-  const slugRaw = String(formData.get('slug') ?? '').trim();
-  const slug = slugRaw || slugify(title);
+  const slug = slugify(String(formData.get('slug') ?? '').trim()) || slugify(title);
 
   const existing = await prisma.project.findFirst({ where: { slug, NOT: { id } } });
   const finalSlug = existing ? `${slug}-${Math.floor(Math.random() * 1000)}` : slug;
