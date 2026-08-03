@@ -39,28 +39,28 @@ export default function Navbar({ site }: { site: SiteLike }) {
         borderBottom: `1px solid ${scrolled || open ? 'var(--c-line)' : 'transparent'}`,
       }}
     >
-      <div className="container-luxe flex items-center justify-between py-5 md:py-6">
-        <Link href="/" className="flex flex-col leading-none" aria-label="Home">
+      <div className="container-luxe flex items-center justify-between gap-4 py-5 md:py-6">
+        <Link href="/" className="flex flex-col leading-none shrink-0 min-w-0" aria-label="Home">
           {site.brandLogoUrl ? (
             <img src={site.brandLogoUrl} alt={site.brandName} className="h-10 w-auto object-contain" />
           ) : (
             <>
-              <span className="font-display text-2xl md:text-3xl tracking-luxe">{site.brandName}</span>
-              <span className="text-[0.55rem] md:text-[0.6rem] tracking-luxe mt-1" style={{ color: 'var(--c-muted)' }}>
+              <span className="font-display text-xl sm:text-2xl md:text-3xl tracking-luxe truncate">{site.brandName}</span>
+              <span className="text-[0.55rem] md:text-[0.6rem] tracking-luxe mt-1 truncate" style={{ color: 'var(--c-muted)' }}>
                 {site.brandTagline}
               </span>
             </>
           )}
         </Link>
 
-        <nav className="hide-mobile flex items-center gap-9">
+        <nav className="hide-mobile flex items-center gap-5 lg:gap-7 xl:gap-9 shrink-0">
           {LINKS.map((l) => {
             const active = l.href === '/' ? pathname === '/' : pathname.startsWith(l.href);
             return (
               <Link
                 key={l.href}
                 href={l.href}
-                className="relative text-[0.72rem] tracking-luxe uppercase transition-colors duration-300"
+                className="relative whitespace-nowrap text-[0.66rem] lg:text-[0.72rem] tracking-wide-luxe lg:tracking-luxe uppercase transition-colors duration-300"
                 style={{ color: active ? 'var(--c-accent)' : undefined }}
               >
                 {l.label}
@@ -73,7 +73,7 @@ export default function Navbar({ site }: { site: SiteLike }) {
           })}
         </nav>
 
-        <Link href="/contact" className="hide-mobile btn-ghost">
+        <Link href="/contact" className="desktop-only btn-ghost">
           Let&apos;s Collaborate
         </Link>
 

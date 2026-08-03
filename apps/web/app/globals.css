@@ -63,11 +63,18 @@ img { display: block; max-width: 100%; height: auto; }
   padding-right: clamp(1.25rem, 3vw, 3rem);
 }
 
+/* Uppercase + letter-spacing leaves a trailing gap after the last glyph, so a
+   symmetric padding renders the label visibly left-of-centre. Trimming the
+   right padding by the same 0.2em puts it back on the optical centre. */
 .btn-primary {
-  display: inline-flex; align-items: center; gap: 0.75rem;
-  padding: 1rem 2rem;
+  --btn-px: clamp(1.35rem, 3.5vw, 2rem);
+  --btn-py: clamp(0.85rem, 2vw, 1rem);
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem;
+  padding: var(--btn-py) calc(var(--btn-px) - 0.2em) var(--btn-py) var(--btn-px);
   background: var(--c-text); color: var(--c-bg);
-  font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; font-size: 0.75rem;
+  font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+  font-size: clamp(0.68rem, 1.6vw, 0.75rem);
+  white-space: nowrap; flex: 0 0 auto; max-width: 100%;
   transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   border: 1px solid var(--c-text);
 }
@@ -78,10 +85,15 @@ img { display: block; max-width: 100%; height: auto; }
 }
 
 .btn-ghost {
-  display: inline-flex; align-items: center; gap: 0.75rem;
-  padding: 1rem 1.75rem;
+  --btn-px: clamp(1.1rem, 2.4vw, 1.75rem);
+  --btn-py: clamp(0.8rem, 1.8vw, 1rem);
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem;
+  padding: var(--btn-py) calc(var(--btn-px) - 0.2em) var(--btn-py) var(--btn-px);
   border: 1px solid var(--c-accent); color: var(--c-accent);
-  letter-spacing: 0.2em; text-transform: uppercase; font-size: 0.7rem; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  font-size: clamp(0.62rem, 1.3vw, 0.7rem); font-weight: 500;
+  /* Never let "Let's Collaborate" break across two lines inside its border. */
+  white-space: nowrap; flex: 0 0 auto; max-width: 100%;
   transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1); background: transparent;
 }
 .btn-ghost:hover { background: var(--c-accent); color: var(--c-bg); }
@@ -157,6 +169,20 @@ img { display: block; max-width: 100%; height: auto; }
 
 @media (max-width: 768px) { .hide-mobile { display: none !important; } }
 @media (min-width: 769px) { .only-mobile { display: none !important; } }
+
+/* The nav CTA only has room once the five nav links are comfortably placed;
+   below 1024px the links alone fill the bar. `!important` because these
+   component classes are declared after @tailwind utilities, so a plain
+   `display: none` would lose to .btn-ghost's inline-flex. */
+@media (max-width: 1023px) { .desktop-only { display: none !important; } }
+
+/* 0.25em tracking is luxurious on a wide screen and an overflow hazard in a
+   150px-wide column on a phone. */
+@media (max-width: 640px) {
+  .tracking-luxe { letter-spacing: 0.16em; }
+  .eyebrow { font-size: 0.65rem; letter-spacing: 0.26em; gap: 0.75rem; }
+  .eyebrow::before { width: 20px; }
+}
 
 .hero-headline { font-family: var(--font-serif); font-weight: 500; font-size: clamp(2.5rem, 5.5vw, 5.5rem); line-height: 1.02; letter-spacing: -0.02em; }
 .section-headline { font-family: var(--font-serif); font-weight: 500; font-size: clamp(2rem, 4.2vw, 4rem); line-height: 1.05; letter-spacing: -0.015em; }
