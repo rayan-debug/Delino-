@@ -117,24 +117,45 @@ model Service {
   @@index([order])
 }
 
+// A section groups many projects on the /work page (e.g. "Logo Design",
+// "Social Media"). Projects without a section still render, grouped by their
+// free-text `category` — so nothing breaks before the backfill runs.
+
+model WorkSection {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  description String    @default("")
+  image       String    @default("")
+  order       Int       @default(0)
+  published   Boolean   @default(true)
+  projects    Project[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  @@index([order])
+}
+
 model Project {
-  id          String   @id @default(cuid())
-  slug        String   @unique
+  id          String       @id @default(cuid())
+  slug        String       @unique
   title       String
   category    String
   description String
   year        String?
   client      String?
   image       String
-  gallery     String[] @default([])
-  tags        String[] @default([])
-  order       Int      @default(0)
-  featured    Boolean  @default(false)
-  published   Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  gallery     String[]     @default([])
+  tags        String[]     @default([])
+  order       Int          @default(0)
+  featured    Boolean      @default(false)
+  published   Boolean      @default(true)
+  section     WorkSection? @relation(fields: [sectionId], references: [id], onDelete: SetNull)
+  sectionId   String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   @@index([order])
   @@index([featured])
+  @@index([sectionId])
 }
 
 model Message {

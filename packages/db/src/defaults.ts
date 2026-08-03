@@ -60,11 +60,57 @@ export const DEFAULT_SERVICES = [
   },
 ];
 
+// Work sections group projects on the /work page. Each section can hold as
+// many projects as needed; `slug` is the stable key projects point at.
+export const DEFAULT_SECTIONS = [
+  {
+    slug: 'website-development',
+    title: 'Website Development',
+    description: 'Bespoke digital flagships built for luxury hospitality.',
+    image:
+      'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=1600&q=85&auto=format&fit=crop',
+    order: 1,
+  },
+  {
+    slug: 'branding-graphic-design',
+    title: 'Branding & Graphic Design',
+    description: 'Identity systems, marks, print, and signage.',
+    image:
+      'https://images.unsplash.com/photo-1568084680786-a84f91d1153c?w=1600&q=85&auto=format&fit=crop',
+    order: 2,
+  },
+  {
+    slug: 'media-management',
+    title: 'Media Management',
+    description: 'Always-on editorial and lifestyle content programmes.',
+    image:
+      'https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=1600&q=85&auto=format&fit=crop',
+    order: 3,
+  },
+  {
+    slug: 'fb-photo-video-production',
+    title: 'F&B Photo & Video Production',
+    description: 'Cinematic food and beverage campaigns.',
+    image:
+      'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=85&auto=format&fit=crop',
+    order: 4,
+  },
+  {
+    slug: 'full-creative-solution',
+    title: 'Full Creative Solution',
+    description: 'End-to-end identity, digital, and content systems.',
+    image:
+      'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1600&q=85&auto=format&fit=crop',
+    order: 5,
+  },
+];
+
 export const DEFAULT_PROJECTS = [
   {
     slug: 'grand-luxe-resort',
     title: 'Grand Luxe Resort',
     category: 'Website Development',
+    sectionSlug: 'website-development',
     description:
       'A bespoke digital flagship for a Mediterranean cliffside retreat — booking, journal, and immersive gallery.',
     year: '2025',
@@ -79,6 +125,7 @@ export const DEFAULT_PROJECTS = [
     slug: 'azure-palace-hotel',
     title: 'Azure Palace Hotel',
     category: 'Branding & Graphic Design',
+    sectionSlug: 'branding-graphic-design',
     description:
       'Identity, stationery, and signage for a heritage palace property — a refined system of marks and monograms.',
     year: '2024',
@@ -93,6 +140,7 @@ export const DEFAULT_PROJECTS = [
     slug: 'celestial-hotel-group',
     title: 'Celestial Hotel Group',
     category: 'Media Management',
+    sectionSlug: 'media-management',
     description:
       'An always-on content engine across five flagship properties, blending editorial and lifestyle storytelling.',
     year: '2025',
@@ -107,6 +155,7 @@ export const DEFAULT_PROJECTS = [
     slug: 'epicure-by-the-sea',
     title: 'Epicure by the Sea',
     category: 'F&B Photo & Video Production',
+    sectionSlug: 'fb-photo-video-production',
     description:
       'A cinematic campaign celebrating coastal gastronomy — slow food, golden light, and quiet rituals.',
     year: '2024',
@@ -121,6 +170,7 @@ export const DEFAULT_PROJECTS = [
     slug: 'luxora-hospitality',
     title: 'Luxora Hospitality',
     category: 'Full Creative Solution',
+    sectionSlug: 'full-creative-solution',
     description:
       'End-to-end identity, digital, and content systems for a new wave luxury hospitality brand.',
     year: '2025',
@@ -135,6 +185,7 @@ export const DEFAULT_PROJECTS = [
     slug: 'maison-du-soleil',
     title: 'Maison du Soleil',
     category: 'Website Development',
+    sectionSlug: 'website-development',
     description:
       'A villa rental platform with motion-rich storytelling, multilingual support, and concierge integration.',
     year: '2024',

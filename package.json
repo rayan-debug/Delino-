@@ -19,6 +19,7 @@
     "db:push": "dotenv -e .env -- pnpm --filter @luxora/db prisma db push",
     "db:migrate": "dotenv -e .env -- pnpm --filter @luxora/db prisma migrate dev",
     "db:seed": "dotenv -e .env -- pnpm --filter @luxora/db seed",
+    "db:backfill-sections": "dotenv -e .env -- pnpm --filter @luxora/db backfill-sections",
     "db:studio": "dotenv -e .env -- pnpm --filter @luxora/db prisma studio"
   },
   "devDependencies": {

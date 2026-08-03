@@ -3,15 +3,22 @@ import { useState } from 'react';
 import ImageInput from '@/components/ImageInput';
 import SaveButton from '@/components/SaveButton';
 
+type SectionOption = { id: string; title: string };
+
 export default function ProjectForm({
   action,
   project,
+  sections = [],
+  defaultSectionId = '',
 }: {
   action: (fd: FormData) => Promise<void>;
   project?: any;
+  sections?: SectionOption[];
+  defaultSectionId?: string;
 }) {
   const [tags, setTags] = useState<string>((project?.tags ?? []).join(', '));
   const [gallery, setGallery] = useState<string>((project?.gallery ?? []).join('\n'));
+  const [sectionId, setSectionId] = useState<string>(project?.sectionId ?? defaultSectionId ?? '');
 
   return (
     <form action={action} className="space-y-6">
@@ -28,10 +35,51 @@ export default function ProjectForm({
             <input className="admin-input" name="slug" defaultValue={project?.slug ?? ''} placeholder="auto-generated if blank" />
           </div>
         </div>
+        <div>
+          <label className="field-label">Section</label>
+          <select
+            className="admin-input"
+            name="sectionId"
+            value={sectionId}
+            onChange={(e) => setSectionId(e.target.value)}
+          >
+            <option value="">— No section (use a custom category) —</option>
+            {sections.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.title}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs mt-2" style={{ color: 'var(--c-muted)' }}>
+            {sections.length === 0 ? (
+              <>
+                No sections yet —{' '}
+                <a href="/sections/new" className="underline">
+                  create one
+                </a>{' '}
+                to group several projects together on the work page.
+              </>
+            ) : (
+              <>A section can hold as many projects as you like; they all show as a grid under it on the work page.</>
+            )}
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="field-label">Category</label>
-            <input className="admin-input" name="category" defaultValue={project?.category ?? ''} required />
+            <input
+              className="admin-input"
+              name="category"
+              defaultValue={project?.category ?? ''}
+              disabled={!!sectionId}
+              placeholder={sectionId ? 'Taken from the section' : 'e.g. Logo Design'}
+            />
+            {!!sectionId && (
+              <p className="text-xs mt-2" style={{ color: 'var(--c-muted)' }}>
+                Set from the section title.
+              </p>
+            )}
           </div>
           <div>
             <label className="field-label">Year</label>

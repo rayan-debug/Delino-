@@ -1,4 +1,4 @@
-import { getProjects } from '@/lib/content';
+import { getWorkSections } from '@/lib/content';
 import Reveal from '@/components/Reveal';
 import WorkGrid from './WorkGrid';
 
@@ -6,7 +6,7 @@ export const revalidate = 60;
 export const metadata = { title: 'Work' };
 
 export default async function WorkPage() {
-  const projects = await getProjects();
+  const sections = await getWorkSections();
   return (
     <div>
       <section className="pt-40 pb-12">
@@ -17,7 +17,7 @@ export default async function WorkPage() {
           </Reveal>
         </div>
       </section>
-      <WorkGrid projects={projects} />
+      <WorkGrid sections={sections} />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import {
   DEFAULT_SITE,
   DEFAULT_HERO,
   DEFAULT_SERVICES,
+  DEFAULT_SECTIONS,
   DEFAULT_PROJECTS,
   DEFAULT_ABOUT,
   DEFAULT_CONTACT,
@@ -74,11 +75,23 @@ async function main() {
   }
   console.log('  ✓ services');
 
+  // Work sections (groups of projects on /work)
+  const sectionIdBySlug = new Map<string, string>();
+  for (const s of DEFAULT_SECTIONS) {
+    const section = await prisma.workSection.upsert({
+      where: { slug: s.slug },
+      create: s,
+      update: {},
+    });
+    sectionIdBySlug.set(s.slug, section.id);
+  }
+  console.log('  ✓ work sections');
+
   // Projects
-  for (const p of DEFAULT_PROJECTS) {
+  for (const { sectionSlug, ...p } of DEFAULT_PROJECTS) {
     await prisma.project.upsert({
       where: { slug: p.slug },
-      create: p,
+      create: { ...p, sectionId: sectionIdBySlug.get(sectionSlug) ?? null },
       update: {},
     });
   }

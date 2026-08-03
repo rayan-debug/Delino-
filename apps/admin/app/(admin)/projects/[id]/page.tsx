@@ -10,8 +10,13 @@ export const dynamic = 'force-dynamic';
 export default async function EditProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   let project: any = null;
+  let sections: { id: string; title: string }[] = [];
   try {
     project = await prisma.project.findUnique({ where: { id } });
+    sections = await prisma.workSection.findMany({
+      orderBy: { order: 'asc' },
+      select: { id: true, title: true },
+    });
   } catch {}
   if (!project) notFound();
 
@@ -23,7 +28,7 @@ export default async function EditProjectPage({ params }: { params: Promise<{ id
         actions={<DeleteProjectButton id={project.id} title={project.title} action={deleteProject} />}
       />
       <div className="p-8 max-w-4xl">
-        <ProjectForm action={updateProject} project={project} />
+        <ProjectForm action={updateProject} project={project} sections={sections} />
       </div>
     </div>
   );
