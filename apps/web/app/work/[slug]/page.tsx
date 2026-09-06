@@ -85,9 +85,9 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
       {p.gallery && p.gallery.length > 0 && (
         <section className="pb-28">
-          {/* Alternating shapes give the gallery a rhythm instead of a flat
-              block: each row pairs a wide card with a tall one. `contain`
-              keeps every clip whole whichever shape it lands in. */}
+          {/* Each card takes its own media's shape, so landscape and portrait
+              pieces sit side by side as they actually are. items-start keeps a
+              shorter card at the top of its row instead of stretching. */}
           <div className="container-luxe grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
             {p.gallery.map((src, i) => (
               <GalleryMedia
