@@ -3,23 +3,13 @@ import { useEffect, useRef, useState } from 'react';
 import { Play } from 'lucide-react';
 import { isVideoUrl, videoPosterUrl } from '@luxora/shared/media';
 
-// Guard rails so one freak panorama or a sliver of a clip can't wreck the row.
-const MIN_RATIO = 0.5; // tallest allowed  (1:2)
-const MAX_RATIO = 2.0; // widest allowed   (2:1)
-
-const clamp = (r: number) => Math.min(MAX_RATIO, Math.max(MIN_RATIO, r));
-
 /**
- * One gallery tile, shaped to fit its own media.
+ * One gallery tile.
  *
- * The card measures what it holds and takes that aspect ratio, so a landscape
- * clip gets a landscape card and a vertical one gets a tall card — no letterbox
- * bars, no cropping, and the grid ends up with a natural mix of shapes.
- *
- * Measuring is free for video: the poster frame is already being fetched to
- * display, and it shares the clip's dimensions, so reading it avoids pulling
- * video metadata over the wire. `aspect` is the fallback used until the real
- * ratio is known and if measurement fails.
+ * Every card is the same shape — the grid stays even and predictable — and the
+ * media is fitted inside it rather than cropped to fill it. With `contain`, a
+ * landscape clip spans the card edge to edge and a vertical one sits centred
+ * against the surface colour, whole either way.
  *
  * Videos stay unloaded (`preload="none"`) behind their poster until the viewer
  * hits play — a project page can hold a dozen clips, and preloading them all
@@ -29,45 +19,24 @@ const clamp = (r: number) => Math.min(MAX_RATIO, Math.max(MIN_RATIO, r));
 export default function GalleryMedia({
   src,
   poster,
-  aspect = 'aspect-[4/5]',
+  aspect = 'aspect-video',
   fit = 'cover',
 }: {
   src: string;
   poster?: string;
   aspect?: string;
   /**
-   * 'cover' fills the card and crops the overflow. 'contain' shows the whole
-   * frame. Once the card matches its media the two look identical; contain is
-   * the safe default for a gallery, where a fallback shape may still apply.
+   * 'cover' fills the card and crops the overflow — right for a cover image
+   * whose framing we choose. 'contain' shows the whole frame, which a gallery
+   * of mixed orientations needs.
    */
   fit?: 'cover' | 'contain';
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [started, setStarted] = useState(false);
-  const [ratio, setRatio] = useState<number | null>(null);
   const video = isVideoUrl(src);
-  // What we display behind the play button. The `poster` prop is a generic
-  // project cover, fine to look at but NOT this clip's own frame.
   const still = video ? videoPosterUrl(src) ?? poster : src;
-  // What we are allowed to measure: only media that genuinely shares this
-  // item's dimensions. Measuring the fallback cover would shape the card to
-  // the wrong thing entirely.
-  const measurable = video ? videoPosterUrl(src) : src;
-
-  useEffect(() => {
-    let cancelled = false;
-    if (!measurable) return;
-    const img = new Image();
-    img.onload = () => {
-      if (!cancelled && img.naturalWidth && img.naturalHeight) {
-        setRatio(clamp(img.naturalWidth / img.naturalHeight));
-      }
-    };
-    img.src = measurable;
-    return () => {
-      cancelled = true;
-    };
-  }, [measurable]);
+  const contain = fit === 'contain';
 
   useEffect(() => {
     const el = videoRef.current;
@@ -82,20 +51,11 @@ export default function GalleryMedia({
     return () => io.disconnect();
   }, [video]);
 
-  // Once measured the ratio wins; until then the caller's class holds the space
-  // so the layout doesn't jump.
-  const shape = ratio ? '' : aspect;
-  const shapeStyle = ratio ? { aspectRatio: String(ratio) } : undefined;
-  const objectFit = fit === 'contain' ? 'object-contain' : 'object-cover';
-
   if (!video) {
     return (
       <div
-        className={`${shape} bg-center bg-no-repeat ${
-          fit === 'contain' && !ratio ? 'bg-contain' : 'bg-cover'
-        }`}
+        className={`${aspect} bg-center bg-no-repeat ${contain ? 'bg-contain' : 'bg-cover'}`}
         style={{
-          ...shapeStyle,
           backgroundImage: `url(${src})`,
           backgroundColor: 'var(--c-surface)',
         }}
@@ -104,29 +64,16 @@ export default function GalleryMedia({
   }
 
   return (
-    <div
-      className={`relative overflow-hidden ${shape}`}
-      style={{ ...shapeStyle, background: 'var(--c-surface)' }}
-    >
+    <div className={`relative overflow-hidden ${aspect}`} style={{ background: 'var(--c-surface)' }}>
       <video
         ref={videoRef}
         src={src}
         poster={still ?? undefined}
-        // With no measurable poster, load just the header (a few KB, since the
-        // files are written faststart) so the clip can report its own size.
-        preload={measurable ? 'none' : 'metadata'}
+        preload="none"
         playsInline
         controls={started}
-        className={`absolute inset-0 h-full w-full ${ratio ? 'object-cover' : objectFit}`}
+        className={`absolute inset-0 h-full w-full ${contain ? 'object-contain' : 'object-cover'}`}
         onPlay={() => setStarted(true)}
-        onLoadedMetadata={(e) => {
-          // Belt and braces: if the poster never resolved, take the real
-          // dimensions once the clip itself reports them.
-          const el = e.currentTarget;
-          if (!ratio && el.videoWidth && el.videoHeight) {
-            setRatio(clamp(el.videoWidth / el.videoHeight));
-          }
-        }}
       />
       {!started && (
         <button

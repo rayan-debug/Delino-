@@ -85,18 +85,12 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
       {p.gallery && p.gallery.length > 0 && (
         <section className="pb-28">
-          {/* Each card takes its own media's shape, so landscape and portrait
-              pieces sit side by side as they actually are. items-start keeps a
-              shorter card at the top of its row instead of stretching. */}
-          <div className="container-luxe grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
+          {/* Uniform 16:9 cards, two to a row. `contain` fits each piece inside
+              its card, so a vertical clip is shown whole rather than cropped to
+              fill a landscape frame. */}
+          <div className="container-luxe grid grid-cols-1 sm:grid-cols-2 gap-6">
             {p.gallery.map((src, i) => (
-              <GalleryMedia
-                key={i}
-                src={src}
-                poster={p.image}
-                aspect={i % 2 === 0 ? 'aspect-video' : 'aspect-[4/5]'}
-                fit="contain"
-              />
+              <GalleryMedia key={i} src={src} poster={p.image} aspect="aspect-video" fit="contain" />
             ))}
           </div>
         </section>
