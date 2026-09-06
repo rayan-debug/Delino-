@@ -85,9 +85,18 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
       {p.gallery && p.gallery.length > 0 && (
         <section className="pb-28">
-          <div className="container-luxe grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Alternating shapes give the gallery a rhythm instead of a flat
+              block: each row pairs a wide card with a tall one. `contain`
+              keeps every clip whole whichever shape it lands in. */}
+          <div className="container-luxe grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
             {p.gallery.map((src, i) => (
-              <GalleryMedia key={i} src={src} poster={p.image} aspect="aspect-video" fit="contain" />
+              <GalleryMedia
+                key={i}
+                src={src}
+                poster={p.image}
+                aspect={i % 2 === 0 ? 'aspect-video' : 'aspect-[4/5]'}
+                fit="contain"
+              />
             ))}
           </div>
         </section>
