@@ -1,9 +1,14 @@
 import { NextResponse } from 'next/server';
 import path from 'node:path';
-import { uploadImageBuffer } from '@luxora/shared/cloudinary';
+import { uploadMediaBuffer } from '@luxora/shared/cloudinary';
 import { getSession } from '@/lib/session';
 
 export const runtime = 'nodejs';
+// Video transcoding on Cloudinary's side can outlast the default budget.
+export const maxDuration = 300;
+
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+const MAX_VIDEO_BYTES = 200 * 1024 * 1024;
 
 export async function POST(req: Request) {
   const session = await getSession();
@@ -23,17 +28,29 @@ export async function POST(req: Request) {
   if (!(file instanceof File)) {
     return NextResponse.json({ error: 'no file' }, { status: 400 });
   }
-  if (file.size > 10 * 1024 * 1024) {
-    return NextResponse.json({ error: 'file too large (max 10MB)' }, { status: 413 });
+
+  const isVideo = file.type.startsWith('video/');
+  const isImage = file.type.startsWith('image/');
+  if (!isVideo && !isImage) {
+    return NextResponse.json(
+      { error: 'only image and video uploads are allowed' },
+      { status: 415 }
+    );
   }
-  if (!file.type.startsWith('image/')) {
-    return NextResponse.json({ error: 'only image uploads are allowed' }, { status: 415 });
+
+  const limit = isVideo ? MAX_VIDEO_BYTES : MAX_IMAGE_BYTES;
+  if (file.size > limit) {
+    return NextResponse.json(
+      { error: `file too large (max ${Math.round(limit / 1024 / 1024)}MB)` },
+      { status: 413 }
+    );
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
   try {
-    const result = await uploadImageBuffer(buffer, file.name || 'upload', {
+    const result = await uploadMediaBuffer(buffer, file.name || 'upload', {
       folder,
+      resourceType: isVideo ? 'video' : 'image',
       localBaseDir: path.join(process.cwd(), 'public', 'uploads'),
       publicPath: '/uploads',
     });

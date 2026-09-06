@@ -84,3 +84,41 @@ Everything visible on the site is editable from the admin:
 ## Environment variables
 
 See `.env.example`. The two required ones in production are `DATABASE_URL` and `ADMIN_SESSION_SECRET` (same value in both Vercel projects).
+
+## Video
+
+Projects accept video as well as images. A gallery entry ending in `.mp4`,
+`.webm`, `.mov`, `.m4v` or `.ogv` renders as an inline player on the project
+page; everything else renders as an image. Videos load only when the viewer
+presses play, and pause when scrolled out of view.
+
+Uploads go **straight from the browser to Cloudinary**, signed by
+`/api/upload/signature`. They cannot be proxied through `/api/upload` in
+production — Vercel caps a serverless request body at ~4.5MB, which any real
+video exceeds. That route remains for images and for local development, where
+Cloudinary is usually unconfigured and files land in `public/uploads`.
+
+Encode masters down before uploading — camera exports run 10–30 Mbps, far more
+than a web page should serve, and Cloudinary's free plan rejects files over
+100MB:
+
+```bash
+ffmpeg -i input.mp4 \
+  -vf "scale=w=1920:h=1920:force_original_aspect_ratio=decrease:force_divisible_by=2" \
+  -c:v libx264 -profile:v high -preset medium -crf 23 -pix_fmt yuv420p \
+  -c:a aac -b:a 128k -movflags +faststart output.mp4
+```
+
+### Bulk import
+
+`packages/db/prisma/import-weddings.ts` uploads a folder of encoded clips and
+their poster frames, then upserts the project that points at them. It is
+idempotent — assets use deterministic public_ids and the project is upserted by
+slug, so a re-run after a failure resumes instead of duplicating.
+
+```bash
+WEDDING_MEDIA_DIR="D:/Website/Decoration/web-ready" pnpm db:import-weddings
+```
+
+Requires `DATABASE_URL` and the three `CLOUDINARY_*` values in the root `.env`.
+Pass `FORCE=1` to re-upload assets that already exist.

@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import ImageInput from '@/components/ImageInput';
+import GalleryInput from '@/components/GalleryInput';
 import SaveButton from '@/components/SaveButton';
 
 type SectionOption = { id: string; title: string };
@@ -17,7 +18,6 @@ export default function ProjectForm({
   defaultSectionId?: string;
 }) {
   const [tags, setTags] = useState<string>((project?.tags ?? []).join(', '));
-  const [gallery, setGallery] = useState<string>((project?.gallery ?? []).join('\n'));
   const [sectionId, setSectionId] = useState<string>(project?.sectionId ?? defaultSectionId ?? '');
 
   return (
@@ -101,13 +101,16 @@ export default function ProjectForm({
       </div>
 
       <div className="card">
-        <ImageInput name="image" defaultValue={project?.image ?? ''} folder="luxora/projects" label="Cover Image" aspect="aspect-[4/3]" />
+        <ImageInput name="image" defaultValue={project?.image ?? ''} folder="luxora/projects" label="Cover Image" aspect="aspect-[4/3]" allowVideo />
       </div>
 
       <div className="card">
-        <label className="field-label">Gallery (one image URL per line)</label>
-        <textarea className="admin-textarea" name="gallery" rows={5} value={gallery} onChange={(e) => setGallery(e.target.value)} placeholder="https://...&#10;https://..." />
-        <p className="text-xs mt-2" style={{ color: 'var(--c-muted)' }}>For uploaded images, use the Upload Media tool on its own page (coming soon) or paste Cloudinary URLs.</p>
+        <GalleryInput
+          name="gallery"
+          defaultValue={project?.gallery ?? []}
+          folder="luxora/projects"
+          label="Gallery (images and videos)"
+        />
       </div>
 
       <div className="card grid grid-cols-1 md:grid-cols-3 gap-4">

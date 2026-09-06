@@ -8,6 +8,7 @@
     ".": "./src/index.ts",
     "./auth": "./src/auth.ts",
     "./cloudinary": "./src/cloudinary.ts",
+    "./media": "./src/media.ts",
     "./preview": "./src/preview.ts"
   },
   "dependencies": {

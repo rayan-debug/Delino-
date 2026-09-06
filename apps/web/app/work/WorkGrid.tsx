@@ -1,6 +1,7 @@
 'use client';
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
+import { stillImageUrl } from '@luxora/shared/media';
 
 type Project = {
   id: string;
@@ -86,7 +87,7 @@ export default function WorkGrid({ sections }: { sections: Section[] }) {
                     <div className="relative overflow-hidden aspect-[4/5]">
                       <div
                         className="absolute inset-0 bg-cover bg-center transition-transform duration-[1400ms] group-hover:scale-105"
-                        style={{ backgroundImage: `url(${p.image})` }}
+                        style={{ backgroundImage: `url(${stillImageUrl(p.image)})` }}
                       />
                       <div
                         className="absolute inset-0"

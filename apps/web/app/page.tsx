@@ -10,6 +10,7 @@ import {
 import Reveal from '@/components/Reveal';
 import ServiceIcon from '@/components/ServiceIcon';
 import HeroLinesLazy from '@/components/HeroLinesLazy';
+import { stillImageUrl } from '@luxora/shared/media';
 
 export const revalidate = 60;
 
@@ -109,7 +110,7 @@ export default async function Home() {
             {projects.slice(0, 5).map((p, i) => (
               <Reveal key={p.id} delay={i * 80}>
                 <Link href={`/work/${p.slug}`} className="tile block">
-                  <div className="tile-image" style={{ backgroundImage: `url(${p.image})` }} />
+                  <div className="tile-image" style={{ backgroundImage: `url(${stillImageUrl(p.image)})` }} />
                   <div className="tile-overlay" />
                   <div className="tile-content">
                     <div className="text-[0.6rem] tracking-luxe uppercase" style={{ color: 'var(--c-accent)' }}>

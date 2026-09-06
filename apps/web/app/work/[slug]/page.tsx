@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { getProjectBySlug, getProjects } from '@/lib/content';
 import Reveal from '@/components/Reveal';
+import GalleryMedia from '@/components/GalleryMedia';
 
 export const revalidate = 60;
 
@@ -63,7 +64,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       <Reveal>
         <section>
           <div className="container-luxe">
-            <div className="aspect-[16/9] bg-cover bg-center" style={{ backgroundImage: `url(${p.image})` }} />
+            <GalleryMedia src={p.image} aspect="aspect-[16/9]" />
           </div>
         </section>
       </Reveal>
@@ -86,7 +87,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         <section className="pb-28">
           <div className="container-luxe grid grid-cols-1 md:grid-cols-2 gap-6">
             {p.gallery.map((src, i) => (
-              <div key={i} className="aspect-[4/5] bg-cover bg-center" style={{ backgroundImage: `url(${src})` }} />
+              <GalleryMedia key={i} src={src} poster={p.image} aspect="aspect-[4/5]" />
             ))}
           </div>
         </section>
