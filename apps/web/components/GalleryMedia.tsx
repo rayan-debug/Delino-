@@ -16,10 +16,18 @@ export default function GalleryMedia({
   src,
   poster,
   aspect = 'aspect-[4/5]',
+  fit = 'cover',
 }: {
   src: string;
   poster?: string;
   aspect?: string;
+  /**
+   * 'cover' fills the card and crops the overflow — right for a cover image
+   * whose framing we control. 'contain' shows the whole frame, which a mixed
+   * gallery needs: landscape clips fill a 16:9 card while vertical ones
+   * pillarbox instead of having their top and bottom sliced off.
+   */
+  fit?: 'cover' | 'contain';
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [started, setStarted] = useState(false);
@@ -41,8 +49,13 @@ export default function GalleryMedia({
   if (!video) {
     return (
       <div
-        className={`${aspect} bg-cover bg-center`}
-        style={{ backgroundImage: `url(${src})` }}
+        className={`${aspect} bg-center bg-no-repeat ${
+          fit === 'contain' ? 'bg-contain' : 'bg-cover'
+        }`}
+        style={{
+          backgroundImage: `url(${src})`,
+          backgroundColor: fit === 'contain' ? 'var(--c-surface)' : undefined,
+        }}
       />
     );
   }
@@ -58,7 +71,9 @@ export default function GalleryMedia({
         preload="none"
         playsInline
         controls={started}
-        className="absolute inset-0 h-full w-full object-cover"
+        className={`absolute inset-0 h-full w-full ${
+          fit === 'contain' ? 'object-contain' : 'object-cover'
+        }`}
         onPlay={() => setStarted(true)}
       />
       {!started && (

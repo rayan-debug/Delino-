@@ -85,9 +85,9 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
       {p.gallery && p.gallery.length > 0 && (
         <section className="pb-28">
-          <div className="container-luxe grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="container-luxe grid grid-cols-1 sm:grid-cols-2 gap-6">
             {p.gallery.map((src, i) => (
-              <GalleryMedia key={i} src={src} poster={p.image} aspect="aspect-[4/5]" />
+              <GalleryMedia key={i} src={src} poster={p.image} aspect="aspect-video" fit="contain" />
             ))}
           </div>
         </section>
