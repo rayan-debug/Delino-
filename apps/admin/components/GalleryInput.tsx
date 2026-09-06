@@ -1,6 +1,6 @@
 'use client';
 import { useRef, useState } from 'react';
-import { Upload, Trash2, ArrowUp, ArrowDown, Film, Image as ImageIcon } from 'lucide-react';
+import { Upload, Trash2, ArrowUp, ArrowDown, Film, Image as ImageIcon, AlertCircle } from 'lucide-react';
 import { isVideoUrl, videoPosterUrl } from '@luxora/shared/media';
 import { uploadFile } from '@/lib/uploadClient';
 
@@ -21,6 +21,11 @@ export default function GalleryInput({
   label?: string;
 }) {
   const [items, setItems] = useState<string[]>(defaultValue);
+  // Removing and reordering only stage a change — nothing is written until the
+  // form is submitted. Compare against what we loaded so we can say so.
+  const initial = useRef(defaultValue.join('\n'));
+  const dirty = items.join('\n') !== initial.current;
+  const removedCount = Math.max(0, defaultValue.length - items.length);
   const [pending, setPending] = useState<{
     done: number;
     total: number;
@@ -80,6 +85,21 @@ export default function GalleryInput({
     <div>
       <label className="field-label">{label}</label>
       <input type="hidden" name={name} value={items.join('\n')} />
+
+      {dirty && (
+        <div
+          className="mb-3 flex items-start gap-2 border px-3 py-2 text-xs"
+          style={{ borderColor: 'var(--c-accent)', color: 'var(--c-accent)' }}
+        >
+          <AlertCircle size={14} className="mt-px shrink-0" />
+          <span>
+            {removedCount > 0
+              ? `${removedCount} item${removedCount === 1 ? '' : 's'} removed — not saved yet.`
+              : 'Gallery changed — not saved yet.'}{' '}
+            Click <strong>Save Changes</strong> at the bottom of this page to apply it.
+          </span>
+        </div>
+      )}
 
       {items.length > 0 && (
         <ul className="space-y-2 mb-4">
