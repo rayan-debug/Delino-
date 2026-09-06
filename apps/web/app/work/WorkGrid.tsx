@@ -81,12 +81,18 @@ export default function WorkGrid({ sections }: { sections: Section[] }) {
 
               {/* The section's own grid — every project in it is clickable and
                   opens the full project page. */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-8">
                 {s.projects.map((p) => (
                   <Link key={p.id} href={`/work/${p.slug}`} className="group block">
-                    <div className="relative overflow-hidden aspect-[4/5]">
+                    {/* Landscape cards, two to a row. The cover is fitted inside
+                        rather than cropped to fill, so a vertical shot keeps its
+                        subject instead of losing the top and bottom. */}
+                    <div
+                      className="relative overflow-hidden aspect-video"
+                      style={{ background: 'var(--c-surface)' }}
+                    >
                       <div
-                        className="absolute inset-0 bg-cover bg-center transition-transform duration-[1400ms] group-hover:scale-105"
+                        className="absolute inset-0 bg-contain bg-no-repeat bg-center transition-transform duration-[1400ms] group-hover:scale-105"
                         style={{ backgroundImage: `url(${stillImageUrl(p.image)})` }}
                       />
                       <div
