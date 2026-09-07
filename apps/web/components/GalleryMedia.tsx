@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { Play } from 'lucide-react';
-import { isVideoUrl, videoPosterUrl } from '@luxora/shared/media';
+import { isVideoUrl, videoPosterUrl, optimizedVideoUrl, optimizedImageUrl } from '@luxora/shared/media';
 
 /**
  * One gallery tile.
@@ -35,7 +35,7 @@ export default function GalleryMedia({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [started, setStarted] = useState(false);
   const video = isVideoUrl(src);
-  const still = video ? videoPosterUrl(src) ?? poster : src;
+  const still = video ? videoPosterUrl(src) ?? optimizedImageUrl(poster) : optimizedImageUrl(src);
   const contain = fit === 'contain';
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export default function GalleryMedia({
       <div
         className={`${aspect} bg-center bg-no-repeat ${contain ? 'bg-contain' : 'bg-cover'}`}
         style={{
-          backgroundImage: `url(${src})`,
+          backgroundImage: `url(${optimizedImageUrl(src)})`,
           backgroundColor: 'var(--c-surface)',
         }}
       />
@@ -67,7 +67,7 @@ export default function GalleryMedia({
     <div className={`relative overflow-hidden ${aspect}`} style={{ background: 'var(--c-surface)' }}>
       <video
         ref={videoRef}
-        src={src}
+        src={optimizedVideoUrl(src)}
         poster={still ?? undefined}
         preload="none"
         playsInline
