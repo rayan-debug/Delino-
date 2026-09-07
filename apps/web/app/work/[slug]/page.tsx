@@ -31,11 +31,16 @@ function galleryShape(category: string) {
   const words = category.toLowerCase().split(/[^a-z]+/).filter(Boolean);
   const portrait = words.some((w) => PORTRAIT_WORDS.has(w));
   return portrait
-    ? // Reels are tall, so three to a row keeps them from dominating the page.
-      // Three from the small breakpoint up, not just on large screens — a tall
-      // card two-up on a laptop takes over the whole viewport.
-      { aspect: 'aspect-[9/16]', grid: 'grid-cols-2 sm:grid-cols-3' }
-    : { aspect: 'aspect-video', grid: 'grid-cols-1 sm:grid-cols-2' };
+    ? {
+        aspect: 'aspect-[9/16]',
+        grid: 'grid-cols-2 sm:grid-cols-3',
+        // A 9:16 card sized purely by column width ends up taller than the
+        // window, so you can never see a whole reel at once. Capping the width
+        // in viewport units caps the height with it: 34vh wide is ~60vh tall,
+        // which leaves the full clip on screen while scrolling.
+        item: 'mx-auto w-full max-w-[34vh]',
+      }
+    : { aspect: 'aspect-video', grid: 'grid-cols-1 sm:grid-cols-2', item: '' };
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -49,6 +54,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const p = await getProjectBySlug(slug);
   if (!p) notFound();
 
+  const shape = galleryShape(p.category);
   const all = await getProjects();
   const idx = all.findIndex((x) => x.slug === slug);
   const next = all[(idx + 1) % Math.max(all.length, 1)] ?? all[0];
@@ -119,15 +125,11 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           {/* Card shape follows the discipline — reels get tall cards, everything
               else landscape. `contain` fits each piece inside its card, so an odd
               one out is shown whole rather than cropped. */}
-          <div className={`container-luxe grid ${galleryShape(p.category).grid} gap-6`}>
+          <div className={`container-luxe grid ${shape.grid} gap-6`}>
             {p.gallery.map((src, i) => (
-              <GalleryMedia
-                key={i}
-                src={src}
-                poster={p.image}
-                aspect={galleryShape(p.category).aspect}
-                fit="contain"
-              />
+              <div key={i} className={shape.item}>
+                <GalleryMedia src={src} poster={p.image} aspect={shape.aspect} fit="contain" />
+              </div>
             ))}
           </div>
         </section>
