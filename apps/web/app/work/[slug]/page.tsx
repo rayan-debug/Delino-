@@ -7,6 +7,22 @@ import GalleryMedia from '@/components/GalleryMedia';
 
 export const revalidate = 60;
 
+/**
+ * Disciplines shot vertically. Their work is reels — 1080x1920 — so a landscape
+ * card would pillarbox every clip and waste most of the frame. Matched on the
+ * project's category (which mirrors its section title), case-insensitively;
+ * anything not listed gets the landscape default.
+ */
+const PORTRAIT_DISCIPLINES = ['products', 'product shots', 'product shot', 'social media', 'reels'];
+
+function galleryShape(category: string) {
+  const portrait = PORTRAIT_DISCIPLINES.includes(category.trim().toLowerCase());
+  return portrait
+    ? // Reels are tall, so three to a row keeps them from dominating the page.
+      { aspect: 'aspect-[9/16]', grid: 'grid-cols-2 lg:grid-cols-3' }
+    : { aspect: 'aspect-video', grid: 'grid-cols-1 sm:grid-cols-2' };
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const p = await getProjectBySlug(slug);
@@ -85,12 +101,18 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
       {p.gallery && p.gallery.length > 0 && (
         <section className="pb-28">
-          {/* Uniform 16:9 cards, two to a row. `contain` fits each piece inside
-              its card, so a vertical clip is shown whole rather than cropped to
-              fill a landscape frame. */}
-          <div className="container-luxe grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Card shape follows the discipline — reels get tall cards, everything
+              else landscape. `contain` fits each piece inside its card, so an odd
+              one out is shown whole rather than cropped. */}
+          <div className={`container-luxe grid ${galleryShape(p.category).grid} gap-6`}>
             {p.gallery.map((src, i) => (
-              <GalleryMedia key={i} src={src} poster={p.image} aspect="aspect-video" fit="contain" />
+              <GalleryMedia
+                key={i}
+                src={src}
+                poster={p.image}
+                aspect={galleryShape(p.category).aspect}
+                fit="contain"
+              />
             ))}
           </div>
         </section>
