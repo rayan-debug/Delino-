@@ -36,9 +36,9 @@ function galleryShape(category: string) {
         grid: 'grid-cols-2 sm:grid-cols-3',
         // A 9:16 card sized purely by column width ends up taller than the
         // window, so you can never see a whole reel at once. Capping the width
-        // in viewport units caps the height with it: 34vh wide is ~60vh tall,
-        // which leaves the full clip on screen while scrolling.
-        item: 'mx-auto w-full max-w-[34vh]',
+        // in viewport units caps the height with it: 24vh wide is ~43vh tall,
+        // so a whole reel sits comfortably in view with room around it.
+        item: 'mx-auto w-full max-w-[24vh]',
       }
     : { aspect: 'aspect-video', grid: 'grid-cols-1 sm:grid-cols-2', item: '' };
 }
