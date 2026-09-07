@@ -32,7 +32,9 @@ function galleryShape(category: string) {
   const portrait = words.some((w) => PORTRAIT_WORDS.has(w));
   return portrait
     ? // Reels are tall, so three to a row keeps them from dominating the page.
-      { aspect: 'aspect-[9/16]', grid: 'grid-cols-2 lg:grid-cols-3' }
+      // Three from the small breakpoint up, not just on large screens — a tall
+      // card two-up on a laptop takes over the whole viewport.
+      { aspect: 'aspect-[9/16]', grid: 'grid-cols-2 sm:grid-cols-3' }
     : { aspect: 'aspect-video', grid: 'grid-cols-1 sm:grid-cols-2' };
 }
 
