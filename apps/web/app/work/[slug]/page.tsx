@@ -9,14 +9,27 @@ export const revalidate = 60;
 
 /**
  * Disciplines shot vertically. Their work is reels — 1080x1920 — so a landscape
- * card would pillarbox every clip and waste most of the frame. Matched on the
- * project's category (which mirrors its section title), case-insensitively;
- * anything not listed gets the landscape default.
+ * card would pillarbox every clip and waste most of the frame.
+ *
+ * Matched as whole words in the project's category, which is free text edited
+ * in the admin: "Products Production" and "Product Shots" both need to resolve
+ * to the same shape without anyone remembering to update this list. Whole words
+ * rather than substrings, because "Production" contains "product" — a substring
+ * match turns "F&B Photo & Video Production" vertical by accident.
  */
-const PORTRAIT_DISCIPLINES = ['products', 'product shots', 'product shot', 'social media', 'reels'];
+const PORTRAIT_WORDS = new Set([
+  'product',
+  'products',
+  'reel',
+  'reels',
+  'social',
+  'tiktok',
+  'vertical',
+]);
 
 function galleryShape(category: string) {
-  const portrait = PORTRAIT_DISCIPLINES.includes(category.trim().toLowerCase());
+  const words = category.toLowerCase().split(/[^a-z]+/).filter(Boolean);
+  const portrait = words.some((w) => PORTRAIT_WORDS.has(w));
   return portrait
     ? // Reels are tall, so three to a row keeps them from dominating the page.
       { aspect: 'aspect-[9/16]', grid: 'grid-cols-2 lg:grid-cols-3' }
